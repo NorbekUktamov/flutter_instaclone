@@ -30,10 +30,10 @@ class _HomePageState extends State<HomePage> {
         controller: pageController,
         scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),
-        children: const [
-          MyHomePage(),
+        children:  [
+          MyHomePage(controller: pageController),
           MySearchPage(),
-          MyPostPage(),
+          MyPostPage(controller: pageController),
           MyLikesPage(),
           MyProfilePage(),
         ],

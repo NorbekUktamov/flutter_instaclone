@@ -10,7 +10,7 @@ class CustomTapBar extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: Colors.white,
+      color: Colors.black,
       child: const TabBar(
         indicatorWeight: 1.5,
         indicatorColor: Colors.black,
@@ -19,10 +19,10 @@ class CustomTapBar extends SliverPersistentHeaderDelegate {
         padding: EdgeInsets.only(bottom: 2),
         tabs: [
           Tab(
-            icon: Icon(Icons.grid_on),
+            icon: Icon(Icons.grid_on,color: Colors.white,),
           ),
           Tab(
-            icon: Icon(Icons.assignment_ind_outlined),
+            icon: Icon(Icons.assignment_ind_outlined,color: Colors.white,),
           ),
         ],
       ),

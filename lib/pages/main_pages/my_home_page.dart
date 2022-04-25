@@ -13,7 +13,9 @@ import 'package:provider/provider.dart';
 import '../../services/user_notifire.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+
+  PageController controller;
+   MyHomePage({Key? key, required this.controller,}) : super(key: key);
   static String id = "/my_home_page";
 
   @override
@@ -32,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: [
            IconButton(
                     onPressed: () {
+                      widget.controller.jumpToPage(2);
                       Navigator.pushReplacementNamed(context, MyPostPage.id);
                     },
                     icon: const Icon(Icons.camera,color: Colors.red,),

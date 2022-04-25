@@ -53,7 +53,7 @@ class _CustomHeaderState extends State<CustomHeader> {
               Text(
                 HiveDB.getUser().fullName,
                 style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 13,color: Colors.white),
               ),
               const SizedBox(height: 10),
               MaterialButton(
@@ -63,11 +63,11 @@ class _CustomHeaderState extends State<CustomHeader> {
                     setState(() {});
                   });
                 },
-                child: const Text("Edit profile"),
+                child: const Text("Edit profile",style: TextStyle(color: Colors.white),),
                 minWidth: double.infinity,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
-                    side: const BorderSide(color: Colors.grey)),
+                    side: const BorderSide(color: Colors.white)),
               ),
               const SizedBox(height: 10),
               Column(
@@ -77,17 +77,17 @@ class _CustomHeaderState extends State<CustomHeader> {
                     backgroundColor: Colors.black,
                     child: CircleAvatar(
                       radius: 32,
-                      backgroundColor: Colors.white,
+                      backgroundColor: Colors.black,
                       child: Icon(
                         CupertinoIcons.plus,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ),
                   ),
                   SizedBox(height: 5),
                   Text(
                     "New",
-                    style: TextStyle(fontSize: 13),
+                    style: TextStyle(fontSize: 13,color: Colors.white),
                   ),
                 ],
               ),

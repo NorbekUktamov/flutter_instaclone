@@ -32,6 +32,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  get controller => null;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,7 +49,7 @@ class _MyAppState extends State<MyApp> {
       home: const SplashPage(),
       routes: {
         HomePage.id: (context) => const HomePage(),
-        MyHomePage.id: (context) => const MyHomePage(),
+        MyHomePage.id: (context) =>  MyHomePage(controller: controller,),
         SplashPage.id: (context) => const SplashPage(),
         SignInPage.id: (context) => const SignInPage(),
         SignUpPage.id: (context) => const SignUpPage(),

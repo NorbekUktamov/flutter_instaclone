@@ -23,11 +23,11 @@ class _PostsAndFollowAndFollowingState
         children: [
           Text(
             widget.number,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16,color: Colors.white),
           ),
           Text(
             widget.text,
-            style: TextStyle(fontSize: 13),
+            style: const TextStyle(fontSize: 13,color: Colors.white),
           ),
         ],
       ),
@@ -62,6 +62,7 @@ class _TextFieldEditProfileState extends State<TextFieldEditProfile> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      style: const TextStyle(color: Colors.white),
       controller: widget.controller,
       decoration: InputDecoration(
         labelText: widget.text,
@@ -70,13 +71,13 @@ class _TextFieldEditProfileState extends State<TextFieldEditProfile> {
             : widget.errorShow
                 ? _errorText(widget.controller.text)
                 : null,
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.grey),
         focusedBorder:
-            UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+            const UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
         errorBorder:
-            UnderlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+            const UnderlineInputBorder(borderSide: BorderSide(color: Colors.red)),
         focusedErrorBorder:
-            UnderlineInputBorder(borderSide: BorderSide(color: Colors.red)),
+            const UnderlineInputBorder(borderSide: BorderSide(color: Colors.red)),
       ),
       onChanged: (_) => setState(() {}),
     );

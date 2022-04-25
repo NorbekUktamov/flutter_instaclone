@@ -109,20 +109,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Consumer<UserNotifier>(
       builder: (context, provider, child) => Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
+          backgroundColor: Colors.black,
           leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: const Icon(CupertinoIcons.clear, size: 25),
+            icon: const Icon(Icons.cancel, size: 25,color: Colors.white,),
           ),
-          title: const Text("Edit Profile"),
+          title: const Text("Edit Profile",style: TextStyle(color: Colors.white),),
           actions: [
             IconButton(
                 onPressed: () {
                   _saveEdit(provider);
                 },
-                icon: const Icon(CupertinoIcons.check_mark, size: 25))
+                icon: const Icon(Icons.check_circle, size: 25,color: Colors.white,))
           ],
         ),
         body: ListView(
@@ -132,8 +134,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
             Column(
               children: [
                 load
-                    ? LinearProgressIndicator(color: Colors.yellow)
-                    : SizedBox.shrink(),
+                    ? const LinearProgressIndicator(color: Colors.yellow)
+                    : const SizedBox.shrink(),
                 SizedBox(height: 15),
                 Container(
                   height: 120,

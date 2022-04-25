@@ -14,8 +14,10 @@ import '../../widgets/splash_page_widgets.dart';
 import 'home_page.dart';
 
 class MyPostPage extends StatefulWidget {
-  const MyPostPage({Key? key}) : super(key: key);
+  PageController controller;
+   MyPostPage({Key? key, required this.controller}) : super(key: key);
   static String id = "/my_post_page";
+
 
   @override
   State<MyPostPage> createState() => _MyPostPageState();
@@ -50,20 +52,24 @@ class _MyPostPageState extends State<MyPostPage> {
     });
   }
 
-   _bottomSheet() {
+  _bottomSheet() {
     showModalBottomSheet(
         context: context,
         builder: (context) {
           return Container(
-            width: MediaQuery.of(context).size.width,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
             height: 120,
             color: Colors.black,
             child: Column(
               children: [
 
                 ListTile(
-                  leading: const Icon(Icons.photo_library,color:Colors.red,),
-                  title: const Text("Pick Photo",style: TextStyle(color: Colors.white),),
+                  leading: const Icon(Icons.photo_library, color: Colors.red,),
+                  title: const Text(
+                    "Pick Photo", style: TextStyle(color: Colors.white),),
                   onTap: () {
                     getImageCamera();
                     Navigator.of(context).pop();
@@ -71,8 +77,10 @@ class _MyPostPageState extends State<MyPostPage> {
                 ),
 
                 ListTile(
-                  leading: const Icon(Icons.camera_alt_rounded,color:Colors.red,),
-                  title: const Text("Take Photo",style: TextStyle(color: Colors.white),),
+                  leading: const Icon(
+                    Icons.camera_alt_rounded, color: Colors.red,),
+                  title: const Text(
+                    "Take Photo", style: TextStyle(color: Colors.white),),
                   onTap: () {
                     getImageGallery();
                     Navigator.of(context).pop();
@@ -88,7 +96,9 @@ class _MyPostPageState extends State<MyPostPage> {
 
   _savePost() async {
     Logger().i(image.toString() + textController.text.trim());
-    if (image == null || textController.text.trim().isEmpty) {
+    if (image == null || textController.text
+        .trim()
+        .isEmpty) {
       return;
     }
     setState(() {
@@ -101,7 +111,9 @@ class _MyPostPageState extends State<MyPostPage> {
   _putPost(String? img) async {
     if (img != null) {
       DataService.putPost(Post(
-        id: HiveDB.getUser().id,
+        id: HiveDB
+            .getUser()
+            .id,
         postImage: img,
         caption: textController.text,
         createDate: DateTime.now().toString(),
@@ -115,7 +127,6 @@ class _MyPostPageState extends State<MyPostPage> {
       });
     }
   }
-
 
 
   @override
@@ -132,15 +143,16 @@ class _MyPostPageState extends State<MyPostPage> {
               textController.clear();
               focusNode.unfocus();
             });
+            widget.controller.jumpToPage(0);
             Navigator.pushReplacementNamed(context, HomePage.id);
           },
-          icon: const Icon(Icons.home,color: Colors.red,),
+          icon: const Icon(Icons.home, color: Colors.red,),
         ),
-        title: const Text("New post",style: TextStyle(color: Colors.white),),
+        title: const Text("New post", style: TextStyle(color: Colors.white),),
         actions: [
           IconButton(
             onPressed: _savePost,
-            icon: const Icon(Icons.upload,color: Colors.red,),
+            icon: const Icon(Icons.upload, color: Colors.red,),
           ),
         ],
       ),
@@ -169,13 +181,16 @@ class _MyPostPageState extends State<MyPostPage> {
                   ),
                   child: image != null
                       ? Image.file(
-                          image!,
-                          fit: BoxFit.cover,
-                        )
+                    image!,
+                    fit: BoxFit.cover,
+                  )
                       : Icon(
-                          CupertinoIcons.camera,
-                          size: MediaQuery.of(context).size.width * 0.1,
-                        ),
+                    CupertinoIcons.camera,
+                    size: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.1,
+                  ),
                 ),
               ),
             ),
