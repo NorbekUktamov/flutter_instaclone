@@ -160,25 +160,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 TextButton(
                   onPressed: _getPhoto,
                   child: const Text(
-                    "Change profile photo",
-                    style: TextStyle(fontSize: 16),
+                    "Edit Avatar",
+                    style: TextStyle(fontSize: 16,color: Colors.red),
                   ),
                 ),
-                TextFieldEditProfile(
-                  text: "Name",
-                  controller: nameController,
-                  errorShow: errorShow,
-                ),
-                TextFieldEditProfile(
-                  text: "Username",
-                  controller: userNameController,
-                  errorShow: errorShow,
-                ),
-                const SizedBox(height: 10),
-                TextFieldEditProfile(
-                    text: "Bio",
-                    controller: bioController,
-                    errorShow: errorShow),
+                // TextFieldEditProfile(
+                //   text: "Name",
+                //   controller: nameController,
+                //   errorShow: errorShow,
+                // ),
+                // TextFieldEditProfile(
+                //   text: "Username",
+                //   controller: userNameController,
+                //   errorShow: errorShow,
+                // ),
+                // const SizedBox(height: 10),
+                // TextFieldEditProfile(
+                //     text: "Bio",
+                //     controller: bioController,
+                //     errorShow: errorShow),
               ],
             ),
           ],

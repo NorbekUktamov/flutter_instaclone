@@ -61,8 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.only(left: 10),
                 children: const [
-                  HeaderYourStory(),
-                  HeaderCircleBoxAndText(),
+                  // HeaderYourStory(),
+                  // HeaderCircleBoxAndText(),
                 ],
               ),
             ),

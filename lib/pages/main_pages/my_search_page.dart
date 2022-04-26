@@ -52,7 +52,7 @@ class _MySearchPageState extends State<MySearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.green,
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: const InstaText(size: 30, color: Colors.white),
