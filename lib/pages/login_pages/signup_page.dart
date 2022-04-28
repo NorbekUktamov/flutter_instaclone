@@ -23,6 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController cpasswordController = TextEditingController();
   bool errorShow = false;
 
   _doSignUp() {
@@ -30,6 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
     String userName = userNameController.text.toString().trim();
     String email = emailController.text.toString().trim();
     String password = passwordController.text.toString().trim();
+    String cpassword = passwordController.text.toString().trim();
 
     if (fullName.isEmpty ||
         userName.isEmpty ||
@@ -37,6 +39,12 @@ class _SignUpPageState extends State<SignUpPage> {
         password.isEmpty) {
       setState(() {
         errorShow = true;
+      });
+      return;
+    }
+    if(password!=cpassword){
+      setState(() {
+        errorShow=true;
       });
       return;
     }
@@ -116,6 +124,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   errorShow: errorShow,
                 ),
                 const SizedBox(height: 10),
+                TextFieldLogin(
+                  text: "Confirm Password",
+                  controller: cpasswordController,
+                  errorShow: errorShow,
+                ),
+                const SizedBox(height: 10),
+
                 buttonSignUp(),
               ],
             ),
