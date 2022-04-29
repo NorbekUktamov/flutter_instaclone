@@ -47,7 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     onTap: () {
                       AuthService.signOutUser(context);
                     },
-                    child: Image.asset("assets/images/icon_messenger.png",color: Colors.red,)),
+                    child:  Icon(Icons.logout,color: Colors.red,)
+                ),
               ),
             ),
           ],

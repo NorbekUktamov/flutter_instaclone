@@ -7,6 +7,8 @@ import 'package:flutter_instaclone/services/data_service.dart';
 import 'package:flutter_instaclone/services/hive_db_service.dart';
 
 import '../../services/auth_service.dart';
+import '../../services/utils.dart';
+import '../../theme/colors.dart';
 import '../../widgets/splash_page_widgets.dart';
 import '../main_pages/home_page.dart';
 
@@ -25,6 +27,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController cpasswordController = TextEditingController();
   bool errorShow = false;
+  bool isLoading =false;
 
   _doSignUp() {
     String fullName = fullNameController.text.toString().trim();
@@ -33,21 +36,52 @@ class _SignUpPageState extends State<SignUpPage> {
     String password = passwordController.text.toString().trim();
     String cpassword = passwordController.text.toString().trim();
 
-    if (fullName.isEmpty ||
-        userName.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty) {
+    // if (fullName.isEmpty ||
+    //     userName.isEmpty ||
+    //     email.isEmpty ||
+    //     password.isEmpty) {
+    //   setState(() {
+    //     errorShow = true;
+    //   });
+    //   return;
+    // }
+    // if(password!=cpassword){
+    //   setState(() {
+    //     errorShow=true;
+    //   });
+    //   return;
+    // }
+
+    if(userName.isEmpty || email.isEmpty || password.isEmpty || cpassword.isEmpty){
+      Utils.snackBar(context, 'Fill in the fields, please!', ColorService.snackBarColor);
       setState(() {
-        errorShow = true;
+        isLoading = false;
       });
       return;
     }
-    if(password!=cpassword){
+    else if (Utils.validateEmail(email) == false) {
+      Utils.snackBar(context, 'Enter a valid email address, please!', ColorService.snackBarColor);
       setState(() {
-        errorShow=true;
+        isLoading = false;
       });
       return;
     }
+    else if (Utils.validatePassword(password) == false) {
+      Utils.snackBar(context, 'Password must contain at least one upper case, one lower case, one digit, one special character and be at least 8 characters in length', ColorService.snackBarColor);
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+    else if(password != cpassword){
+      Utils.snackBar(context, 'Confirm password correctly, please!', ColorService.snackBarColor);
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+
     AuthService.signUpUser(password: password, email: email, name: fullNameController.text)
         .then((value) {
       if (value != null) {
