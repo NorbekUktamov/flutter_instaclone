@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_instaclone/models/post_model.dart';
 import 'package:flutter_instaclone/models/user_model.dart';
 import 'package:flutter_instaclone/services/hive_db_service.dart';
-import 'package:logger/logger.dart';
 
 class DataService {
   static final instance = FirebaseFirestore.instance;

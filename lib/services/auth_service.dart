@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instaclone/services/hive_db_service.dart';
 import 'package:flutter_instaclone/widgets/splash_page_widgets.dart';
 import 'package:logger/logger.dart';
 import '../pages/login_pages/signin_page.dart';

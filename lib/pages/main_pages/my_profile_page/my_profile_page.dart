@@ -1,15 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instaclone/models/user_model.dart';
 import 'package:flutter_instaclone/pages/main_pages/my_profile_page/custom_header.dart';
 import 'package:flutter_instaclone/pages/main_pages/my_profile_page/custom_tap_bar.dart';
 import 'package:flutter_instaclone/services/user_notifire.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-
 import '../../../services/data_service.dart';
-import '../../../services/hive_db_service.dart';
 
 class MyProfilePage extends StatefulWidget {
   const MyProfilePage({Key? key}) : super(key: key);

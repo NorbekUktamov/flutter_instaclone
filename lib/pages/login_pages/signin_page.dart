@@ -3,8 +3,6 @@ import 'package:flutter_instaclone/pages/login_pages/signup_page.dart';
 import 'package:flutter_instaclone/services/data_service.dart';
 import 'package:flutter_instaclone/services/hive_db_service.dart';
 import 'package:flutter_instaclone/widgets/splash_page_widgets.dart';
-import 'package:logger/logger.dart';
-
 import '../../services/auth_service.dart';
 import '../main_pages/home_page.dart';
 

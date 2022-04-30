@@ -36,21 +36,6 @@ class _SignUpPageState extends State<SignUpPage> {
     String password = passwordController.text.toString().trim();
     String cpassword = passwordController.text.toString().trim();
 
-    // if (fullName.isEmpty ||
-    //     userName.isEmpty ||
-    //     email.isEmpty ||
-    //     password.isEmpty) {
-    //   setState(() {
-    //     errorShow = true;
-    //   });
-    //   return;
-    // }
-    // if(password!=cpassword){
-    //   setState(() {
-    //     errorShow=true;
-    //   });
-    //   return;
-    // }
 
     if(userName.isEmpty || email.isEmpty || password.isEmpty || cpassword.isEmpty){
       Utils.snackBar(context, 'Fill in the fields, please!', ColorService.snackBarColor);
