@@ -52,7 +52,7 @@ class _MySearchPageState extends State<MySearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         title: const InstaText(size: 30, color: Colors.white),
@@ -61,6 +61,7 @@ class _MySearchPageState extends State<MySearchPage> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         children: [
           TextField(
+            style: TextStyle(color: Colors.white),
             textAlignVertical: TextAlignVertical.center,
             controller: searchController,
             decoration: InputDecoration(
@@ -101,11 +102,11 @@ class _MySearchPageState extends State<MySearchPage> {
                             title: Text(
                               e["fullName"],
                               style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
+                                  fontSize: 14, fontWeight: FontWeight.bold,color: Colors.white),
                             ),
                             subtitle: const Text(
-                              "Hi guys how are you ?",
-                              style: TextStyle(fontSize: 12),
+                              "",
+                              style: TextStyle(fontSize: 12,color: Colors.white),
                             ),
                             trailing: TrailingListTile(isFollow: true),
                             contentPadding:
@@ -128,7 +129,7 @@ class _MySearchPageState extends State<MySearchPage> {
                             ),
                             subtitle: const Text(
                               "Hi guys how are you ?",
-                              style: TextStyle(fontSize: 12),
+                              style: TextStyle(fontSize: 12,color: Colors.white),
                             ),
                             trailing: TrailingListTile(isFollow: true),
                             contentPadding:
