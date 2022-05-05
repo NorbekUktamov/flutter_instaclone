@@ -25,13 +25,13 @@ class HeaderCircleBoxAndText extends StatelessWidget {
             child: CircleAvatar(
               radius: 29,
               backgroundImage: NetworkImage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy1uZTBlxjOfVEiZsIt9FSo_bkxgEb6_OslQ&usqp=CAU"),
+                  ""),
             ),
           ),
         ),
         const SizedBox(height: 5),
         const Text(
-          "Jasco",
+          "",
           style: TextStyle(fontSize: 12),
         ),
       ],
@@ -53,7 +53,7 @@ class HeaderYourStory extends StatelessWidget {
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
-              image: AssetImage("assets/images/photo_2022-03-15_10-46-41.jpg"),
+              image: AssetImage("assets/images/ic_person.png"),
             ),
           ),
           child: const CircleAvatar(

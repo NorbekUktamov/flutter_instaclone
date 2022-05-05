@@ -7,7 +7,6 @@ import 'package:flutter_instaclone/pages/login_pages/signup_page.dart';
 import 'package:flutter_instaclone/pages/login_pages/splash_page.dart';
 import 'package:flutter_instaclone/pages/main_pages/my_home_page.dart';
 import 'package:flutter_instaclone/pages/main_pages/my_profile_page/edit_profile_page.dart';
-import 'package:flutter_instaclone/services/http_service.dart';
 import 'package:flutter_instaclone/services/user_notifire.dart';
 import 'package:provider/provider.dart';
 

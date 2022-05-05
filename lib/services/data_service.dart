@@ -43,9 +43,19 @@ class DataService {
     return users;
   }
 
-  static Future<bool> putPost(Post post)async{
-    String postId = instance.collection(userFolder).doc(post.id).collection(postFolder).doc().id;
-    await instance.collection(userFolder).doc(post.id).collection(postFolder).doc(postId).set(post.toJson());
+  static Future<bool> putPost(Post post) async {
+    String postId = instance
+        .collection(userFolder)
+        .doc(post.id)
+        .collection(postFolder)
+        .doc()
+        .id;
+    await instance
+        .collection(userFolder)
+        .doc(post.id)
+        .collection(postFolder)
+        .doc(postId)
+        .set(post.toJson());
     return true;
   }
 }
