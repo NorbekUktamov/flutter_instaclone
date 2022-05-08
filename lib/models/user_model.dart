@@ -1,50 +1,56 @@
 class UserModel {
-  late String id;
-  late String fullName;
-  late String userName;
-  late String email;
-  late String password;
-  String? userImg;
-  bool isFollowing = false;
-  int followersCount = 0;
-  int followingCount = 0;
+  String? uid;
+  String? profileImageURL;
+  String username;
+  String fullname;
+  String email;
+  String password;
 
-  // List<dynamic>? post;
 
-  UserModel({
-    required this.id,
-    required this.fullName,
-    required this.userName,
-    required this.email,
-    required this.password,
-    this.userImg,
-  });
+  bool isFollowed = false;
+  int followers = 0;
+  int followings = 0;
+
+  // #for notification
+  String deviceId = "";
+  String deviceType = "";
+  String deviceToken = "";
+
+  UserModel(
+      {required this.password, required this.username,required this.fullname, required this.email});
 
   UserModel.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        fullName = json["fullName"],
-        userName = json["userName"],
-        userImg = json["userImg"],
-        email = json['email'],
-        password = json['password'];
+      : uid = json["uid"],
+        username = json["username"],
+        fullname=json["fullname"],
+        email = json["email"],
+        password = json["password"],
+        profileImageURL = json["profileImageURL"],
+        followers = json["followers"],
+        followings = json["followings"],
+        deviceId = json['device_id'] ?? "",
+        deviceType = json['device_type'] ?? "",
+        deviceToken = json['device_token'] ?? "";
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "fullName": fullName,
-        "userName": userName,
-        "userImg": userImg,
-        "email": email,
-        "password": password,
-      };
+    "uid": uid,
+    "username": username,
+    "fullname": fullname,
+    "email": email,
+    "password": password,
+    "profileImageURL": profileImageURL,
+    "followers": followers,
+    "followings": followings,
+    'device_id': deviceId,
+    'device_type': deviceType,
+    'device_token': deviceToken,
+  };
 
   @override
   bool operator ==(Object other) {
-    return other is UserModel && other.id == id;
+    return other is UserModel && other.uid == uid;
   }
 
   @override
-  int get hashCode => super.hashCode;
-
+  int get hashCode => uid.hashCode;
 }
-
-

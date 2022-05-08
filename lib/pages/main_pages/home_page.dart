@@ -1,76 +1,104 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_instaclone/models/user_model.dart';
-import 'package:flutter_instaclone/pages/main_pages/my_home_page.dart';
-import 'package:flutter_instaclone/pages/main_pages/my_likes_page.dart';
-import 'package:flutter_instaclone/pages/main_pages/my_post_page.dart';
-import 'package:flutter_instaclone/pages/main_pages/my_profile_page/my_profile_page.dart';
-import 'package:flutter_instaclone/pages/main_pages/my_search_page.dart';
-import 'package:flutter_instaclone/services/hive_db_service.dart';
-import 'package:flutter_instaclone/services/user_notifire.dart';
-import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
+
+import '../../services/utils.dart';
+import '../../theme/colors.dart';
+import 'my_profile_page.dart';
+import 'my_home_page.dart';
+import 'my_likes_page.dart';
+import 'my_post_page.dart';
+import 'my_search_page.dart';
 
 class HomePage extends StatefulWidget {
+  static const String id = '/home_page';
   const HomePage({Key? key}) : super(key: key);
-  static String id = "/home_page";
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  PageController pageController = PageController(initialPage: 0);
-  int _selectedIndex = 0;
+  PageController pageController = PageController();
+  int currentPage = 0;
+  DateTime? lastPressed;
+
+  _initNotification() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (kDebugMode) {
+        print("Message: ${message.notification.toString()}");
+      }
+      Utils.showLocalNotification(message, context);
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      Utils.showLocalNotification(message, context);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initNotification();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    if(mounted){
+      super.setState(fn);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: pageController,
-        scrollDirection: Axis.horizontal,
-        physics: const NeverScrollableScrollPhysics(),
-        children:  [
-          MyHomePage(controller: pageController),
-          MySearchPage(),
-          MyPostPage(controller: pageController),
-          MyLikesPage(),
-          MyProfilePage(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
-        backgroundColor: Colors.black,
-        enableFeedback: false,
-        currentIndex: _selectedIndex,
-        onTap: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+      body: WillPopScope(
+        onWillPop: () async{
+          final now = DateTime.now();
+          const maxDuration = Duration(seconds: 2);
+          final isWarning = lastPressed == null || now.difference(lastPressed!) > maxDuration;
 
+          if(isWarning){
+            lastPressed = DateTime.now();
+            // doubleTap(context);
+            return false;
+          } else{
+            return true;
+          }
+        },
+        child: PageView(
+          controller: pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            FeedPage(controller: pageController),
+            const SearchPage(),
+            UploadPage(controller: pageController),
+            const LikesPage(),
+            const ProfilePage(),
+          ],
+          onPageChanged: (int index) {
+            setState(() {
+              currentPage = index;
+            });
+          },
+        ),
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        currentIndex: currentPage,
+        activeColor: Colors.white,
+        backgroundColor: Colors.black,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home)),
+          BottomNavigationBarItem(icon: Icon(Icons.search)),
+          BottomNavigationBarItem(icon: Icon(Icons.add_box)),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite)),
+          BottomNavigationBarItem(icon: Icon(Icons.account_circle)),
+        ],
+        onTap: (int index) {
           pageController.jumpToPage(index);
         },
-        type: BottomNavigationBarType.fixed,
-        selectedIconTheme: const IconThemeData(color: Colors.white),
-        unselectedIconTheme: const IconThemeData(color: Colors.grey),
-        items: const [
-          BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.home), label: ""),
-          BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.search), label: ""),
-          BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.plusSquare), label: ""),
-          BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.heart), label: ""),
-          BottomNavigationBarItem(
-              icon: FaIcon(FontAwesomeIcons.userCircle), label: ""),
-        ],
       ),
     );
   }
-
-
-
-
 }

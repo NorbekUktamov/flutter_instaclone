@@ -1,126 +1,155 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_instaclone/services/firestore_service.dart';
+import 'package:flutter_instaclone/services/utils.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_instaclone/services/auth_service.dart';
-import 'package:flutter_instaclone/services/data_service.dart';
+
 import 'package:flutter_instaclone/services/hive_db_service.dart';
 import 'package:flutter_instaclone/widgets/my_home_page_widgets.dart';
 import 'package:flutter_instaclone/widgets/splash_page_widgets.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../../services/user_notifire.dart';
+import '../../models/post_model.dart';
 
-class MyLikesPage extends StatefulWidget {
-  static String id = "/my_likes_page";
-  const MyLikesPage({Key? key}) : super(key: key);
+import '../../widgets/appBar.dart';
+import 'my_user_page.dart';
+
+
+class LikesPage extends StatefulWidget {
+  static const String id = '/likes_page';
+  const LikesPage({Key? key}) : super(key: key);
 
   @override
-  State<MyLikesPage> createState() => _MyLikesPageState();
+  State<LikesPage> createState() => _LikesPageState();
 }
 
-class _MyLikesPageState extends State<MyLikesPage> {
+class _LikesPageState extends State<LikesPage> {
+  bool isLoading = false;
+  List<Post> posts = [];
+
+  void _apiLoadLikes() {
+    setState(() {
+      isLoading = true;
+    });
+    FirestoreService.loadLikes().then((value) => {_resLoadLikes(value)});
+  }
+
+  void _resLoadLikes(List<Post> _posts) {
+    setState(() {
+      posts = _posts;
+      isLoading = false;
+    });
+  }
+
+  void _actionRemovePost(Post post) async {
+    var result = await Utils.dialog(context, 'Instagram',
+        "Are you sure you want to remove this post?", false);
+    if (result) {
+      setState(() {
+        isLoading = true;
+      });
+      await FirestoreService.likePost(post, false);
+      await FirestoreService.removePost(post)
+          .then((value) => {_apiLoadLikes()});
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _apiLoadLikes();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    if (mounted) super.setState(fn);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserNotifier>(
-      builder: (context, provider, _) => Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: const InstaText(size: 30, color: Colors.white),
-
-        ),
-        body: ListView(
-          shrinkWrap: true,
+    return Scaffold(
+        appBar: appBar(text: 'Likes', isCentered: true),
+        body: Stack(
           children: [
-            const Divider(),
-            StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection(DataService.userFolder)
-                  .doc(provider.userM.id)
-                  .collection(DataService.postFolder)
-                  .snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                Logger().i(snapshot.hasData);
-                if (snapshot.hasData) {
-                  HiveDB.box
-                      .put("postLength", snapshot.data!.docs.length.toString());
-                  return Column(
-                    children: snapshot.data!.docs
-                        .map(
-                          (e) => Column(children: [
-                        ///header
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          child: Row(
-                            children: [
-                              Container(
-                                height: 30,
-                                width: 30,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle),
-                                child: provider.userM.userImg == null
-                                    ? Image.asset("assets/images/img.png")
-                                    : Image.network(
-                                    provider.userM.userImg!),
-                              ),
-                              const SizedBox(width: 10),
-                              Text(provider.userM.userName,style: const TextStyle(color: Colors.white),),
-                              const Spacer(),
-                              GestureDetector(
-                                  onTap: () {},
-                                  child: const Icon(Icons.more_vert,color: Colors.white,)),
-                            ],
-                          ),
-                        ),
-
-                        ///image
-                        Image.network(
-                          e["postImage"],
-                          height: 300,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-
-                        ///footer
-                        Row(
-                          children: const [
-                            FooterIcons(icon: FontAwesomeIcons.heart),
-                            FooterIcons(icon: FontAwesomeIcons.comment),
-                            FooterIcons(icon: FontAwesomeIcons.paperPlane),
-                            Spacer(),
-                            FooterIcons(icon: FontAwesomeIcons.bookmark),
-                          ],
-                        ),
-
-                        ///caption
-                        Padding(
-                          padding:
-                          const EdgeInsets.symmetric(horizontal: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                provider.userM.userName + "  ",
-                                style:
-                                TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
-                              ),
-                              Text(e["caption"],style: TextStyle(color: Colors.white),),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                      ]),
-                    )
-                        .toList(),
-                  );
-                }
-                return Container();
+            posts.isNotEmpty
+                ? ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: posts.length,
+              itemBuilder: (BuildContext context, int index) {
+                return likesWidget(posts[index]);
               },
+            )
+                : const Center(
+              child: Text('No liked posts',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                      fontSize: 18)),
             ),
+            isLoading
+                ? const Center(child: CircularProgressIndicator.adaptive())
+                : const SizedBox.shrink()
           ],
+        ));
+  }
+
+  Widget likesWidget(Post post) {
+    return ListTile(
+      contentPadding:
+      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      onTap: () {
+        if (!post.isMine) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      UserProfilePage(uid: post.uid!)));
+        }
+      },
+      onLongPress: () {
+        _actionRemovePost(post);
+      },
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(50.0),
+        child: post.profileImage == null
+            ? Image.asset(
+          'assets/profile_pictures/user.png',
+          height: 45,
+          width: 45,
+          fit: BoxFit.cover,
+        )
+            : CachedNetworkImage(
+          imageUrl: post.profileImage!,
+          placeholder: (context, url) =>
+              Image.asset('assets/profile_pictures/user.png'),
+          errorWidget: (context, url, error) =>
+              Image.asset('assets/profile_pictures/user.png'),
+          height: 45,
+          width: 45,
+          fit: BoxFit.cover,
+        ),
+      ),
+      title: Text(post.username ?? 'User',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white)),
+      subtitle: Text(post.caption,
+          style: const TextStyle(fontSize: 16,color: Colors.white),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1),
+      trailing: ClipRRect(
+        borderRadius: BorderRadius.circular(8.0),
+        child: CachedNetworkImage(
+          imageUrl: post.image,
+          placeholder: (context, url) =>
+          const Center(child: CircularProgressIndicator.adaptive()),
+          errorWidget: (context, url, error) => const Icon(Icons.error,color: Colors.white,),
+          height: 200,
+          width: 100,
+          fit: BoxFit.cover,
         ),
       ),
     );

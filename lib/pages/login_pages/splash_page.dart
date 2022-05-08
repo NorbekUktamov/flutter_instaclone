@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instaclone/models/user_model.dart';
 import 'package:flutter_instaclone/pages/login_pages/signin_page.dart';
 import 'package:flutter_instaclone/pages/main_pages/home_page.dart';
-import 'package:flutter_instaclone/services/data_service.dart';
+
 import 'package:flutter_instaclone/services/hive_db_service.dart';
 import 'package:flutter_instaclone/widgets/splash_page_widgets.dart';
+
+import '../../services/utils.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -18,35 +20,33 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  late bool isLogin;
-
-  _checkUser() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        setState(() {
-          isLogin = false;
-          Navigator.pushReplacementNamed(context, SignInPage.id);
-        });
-      } else {
-        setState(() {
-          isLogin = true;
-          _getUser(user.uid);
-        });
-      }
-
-    });
+  Widget _openNextPage() {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, value) {
+        if(value.hasData) {
+          HiveService.storeUID(value.data!.uid);
+          return const HomePage();
+        } else {
+          HiveService.removeUid();
+          return const SignInPage();
+        }
+      },
+    );
   }
 
-  _getUser(String id)async{
-      UserModel user = await DataService.getUser(id);
-      HiveDB.putUser(user);
-      Navigator.pushReplacementNamed(context, HomePage.id);
-  }
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
-    _checkUser();
+    Utils.initNotification();
+    // Future.delayed(Duration.zero, () async {
+    //   await FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    // });
+    Timer(const Duration(seconds: 4), () {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => _openNextPage()));
+    });
   }
 
   @override

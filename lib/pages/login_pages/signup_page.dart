@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_instaclone/models/user_model.dart';
 import 'package:flutter_instaclone/pages/login_pages/signin_page.dart';
-import 'package:flutter_instaclone/services/data_service.dart';
+
 import 'package:flutter_instaclone/services/hive_db_service.dart';
 
 import '../../services/auth_service.dart';
+import '../../services/firestore_service.dart';
 import '../../services/utils.dart';
 import '../../theme/colors.dart';
 import '../../widgets/splash_page_widgets.dart';
@@ -29,15 +30,14 @@ class _SignUpPageState extends State<SignUpPage> {
   bool errorShow = false;
   bool isLoading =false;
 
-  _doSignUp() {
-    String fullName = fullNameController.text.toString().trim();
-    String userName = userNameController.text.toString().trim();
+
+  void _doSignUp() async{
+    String fullname = fullNameController.text.toString().trim();
+    String username = userNameController.text.toString().trim();
     String email = emailController.text.toString().trim();
     String password = passwordController.text.toString().trim();
-    String cpassword = passwordController.text.toString().trim();
-
-
-    if(userName.isEmpty || email.isEmpty || password.isEmpty || cpassword.isEmpty){
+    String confirmPassword = cpasswordController.text.toString().trim();
+    if(username.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty){
       Utils.snackBar(context, 'Fill in the fields, please!', ColorService.snackBarColor);
       setState(() {
         isLoading = false;
@@ -58,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
       });
       return;
     }
-    else if(password != cpassword){
+    else if(password != confirmPassword){
       Utils.snackBar(context, 'Confirm password correctly, please!', ColorService.snackBarColor);
       setState(() {
         isLoading = false;
@@ -66,35 +66,30 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
+    UserModel user = UserModel(username: username, email: email, password: password, fullname: fullname,);
+    await AuthenticationService.signUpUser(context, username, email, password,fullname,)
+        .then((value) => _getFirebaseUser(user, value));
 
-    AuthService.signUpUser(password: password, email: email, name: fullNameController.text)
-        .then((value) {
-      if (value != null) {
-        UserModel user = UserModel(
-            id: value.uid,
-            fullName: fullNameController.text,
-            userName: userName,
-            email: email,
-            password: password,
-            userImg: null);
-        HiveDB.putUser(user);
-        DataService.putUser(user);
-        Navigator.pushReplacementNamed(context, HomePage.id);
-      } else {
-        _checkErrorFireBase();
-      }
+  }
+
+  void _getFirebaseUser(UserModel userModel, User? user) {
+    if (user != null) {
+      HiveService.storeUID(user.uid);
+      FirestoreService.storeUser(userModel).then((value) => Navigator.pushReplacementNamed(context, HomePage.id));
+    } else {
+      Utils.snackBar(context, 'Check your data, please!', ColorService.snackBarColor);
+    }
+    setState(() {
+      isLoading = false;
     });
   }
 
-  _checkErrorFireBase() async {
-    String email = emailController.text.toString().trim();
-    String password = passwordController.text.toString().trim();
-    try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      errorToast(msg: e.message);
-    }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
   }
 
   @override

@@ -1,58 +1,59 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_instaclone/theme/colors.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+
 import 'package:flutter_instaclone/pages/login_pages/signin_page.dart';
 import 'package:flutter_instaclone/pages/login_pages/signup_page.dart';
 import 'package:flutter_instaclone/pages/login_pages/splash_page.dart';
-import 'package:flutter_instaclone/pages/main_pages/my_home_page.dart';
-import 'package:flutter_instaclone/pages/main_pages/my_profile_page/edit_profile_page.dart';
-import 'package:flutter_instaclone/services/user_notifire.dart';
-import 'package:provider/provider.dart';
-
 import 'pages/main_pages/home_page.dart';
 import 'services/hive_db_service.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-void main() async {
+
+Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   await Hive.initFlutter();
-  await Hive.openBox(HiveDB.nameDB);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  Provider.debugCheckInvalidValueType = null;
-  runApp(ChangeNotifierProvider(create: (_) => UserNotifier(),child: MyApp()));
+  await Hive.openBox(HiveService.DB_NAME);
+  await Firebase.initializeApp();
+
+  // notification
+  var initAndroidSetting = const AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initIosSetting = const IOSInitializationSettings();
+  var initSetting = InitializationSettings(android: initAndroidSetting, iOS: initIosSetting);
+  await FlutterLocalNotificationsPlugin().initialize(initSetting);
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+    runApp(const MyApp());
+  });
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  get controller => null;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Instagram',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        hintColor: Colors.white,
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-            color: Colors.white, foregroundColor: Colors.black, elevation: 0),
-        textTheme: const TextTheme(bodyText1: TextStyle(color: Colors.white)),
+        // primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.black,
+          foregroundColor: ColorService.lightColor,
+          elevation: 0.0,
+        ),
       ),
+      // themeMode: provider.themeMode,
       home: const SplashPage(),
       routes: {
-        HomePage.id: (context) => const HomePage(),
-        MyHomePage.id: (context) =>  MyHomePage(controller: controller,),
         SplashPage.id: (context) => const SplashPage(),
         SignInPage.id: (context) => const SignInPage(),
         SignUpPage.id: (context) => const SignUpPage(),
-        EditProfilePage.id: (context) => const EditProfilePage(),
+        HomePage.id: (context) => const HomePage()
       },
     );
   }

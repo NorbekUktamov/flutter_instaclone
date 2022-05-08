@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instaclone/pages/login_pages/signup_page.dart';
-import 'package:flutter_instaclone/services/data_service.dart';
 import 'package:flutter_instaclone/services/hive_db_service.dart';
 import 'package:flutter_instaclone/widgets/splash_page_widgets.dart';
+import '../../models/user_model.dart';
 import '../../services/auth_service.dart';
+import '../../services/firestore_service.dart';
+import '../../services/utils.dart';
+import '../../theme/colors.dart';
 import '../main_pages/home_page.dart';
 
 class SignInPage extends StatefulWidget {
@@ -17,39 +21,60 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  bool errorShow = false;
+  bool isLoading = false;
+  bool errorShow=false;
 
-  _doSignIn() {
-    String email = emailController.text.toString().trim();
-    String password = passwordController.text.toString().trim();
+
+
+  void _doSignIn() async {
+    String email = emailController.text.trim().toString();
+    String password = passwordController.text.trim().toString();
+
     if (email.isEmpty || password.isEmpty) {
+      Utils.snackBar(context, 'Fill in the fields, please!', ColorService.snackBarColor);
       setState(() {
-        errorShow = true;
+        isLoading = false;
       });
       return;
     }
-    AuthService.signInUser(password: password, email: email)
-        .then((value) async {
-      if (value != null) {
-        await DataService.getUser(value.uid)
-            .then((value) => HiveDB.putUser(value));
-        Navigator.pushReplacementNamed(context, HomePage.id);
-      } else {
-        _checkError();
-      }
+
+    await AuthenticationService.signInUser(context, email, password)
+        .then((value) => _getFirebaseUser(value));
+  }
+
+  void _getFirebaseUser(User? user) {
+    if (user != null) {
+      HiveService.storeUID(user.uid);
+      _apiUpdateUser();
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const HomePage()));
+    }
+    setState(() {
+      isLoading = false;
     });
   }
 
-  _checkError() async {
-    errorToast(msg: "Check your email or password");
+  void _apiUpdateUser() async {
+    UserModel user = await FirestoreService.loadUser(null);
+    user.deviceToken = HiveService.getToken();
+    await FirestoreService.updateUser(user);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Utils.initNotification();
   }
 
   @override
   void dispose() {
+    // TODO: implement dispose
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {

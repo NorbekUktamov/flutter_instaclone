@@ -1,37 +1,46 @@
 import 'dart:io';
-
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart' as Path;
+import 'hive_db_service.dart';
+
 
 class StorageService {
-  static final storage = FirebaseStorage.instance.ref();
-  static const String folderUserImg = "user_image";
-  static const String folderPostImg = "post_image";
+  static final Reference _storage = FirebaseStorage.instance.ref();
+  static const postFolder = 'post_images';
+  static const highlightFolder = 'highlight_images';
+  static const userFolder = 'profile_images';
 
-  static Future<String?> uploadImg(File? _image, String folder, {String? oldUrl}) async {
-    if (oldUrl != null) {
-      await deleteStorage(oldUrl, folder);
-    }
-    String? url;
-    String _imgName = "image_" + DateTime.now().toString();
-    Reference fireBaseStorageRef = storage.child(folder).child(_imgName);
-    if (_image != null) {
-      await fireBaseStorageRef.putFile(_image).then((p0) async {
-        final String downloadImg = await p0.ref.getDownloadURL();
-        url = downloadImg;
-      });
-    }
-    return url;
+  // #store user profile image
+  static Future<String?> uploadUserImage(File _image) async {
+    String uid = HiveService.getUID();
+    String profileImage = uid;
+    Reference firebaseStorageRef = _storage.child(userFolder).child(profileImage);
+    UploadTask uploadTask = firebaseStorageRef.putFile(_image);
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
   }
 
-  static deleteStorage(String oldUrl, folder) async {
-    var fileUrl = Uri.decodeFull(Path.basename(oldUrl))
-        .replaceAll(RegExp(r'(\?alt).*'), '');
-    var fileUrlNew = Uri.decodeFull(Path.basename(fileUrl))
-        .replaceAll(RegExp(r'post_image/'), '');
-    Reference photoRef = storage.child(folder).child(fileUrlNew);
-    try {
-      await photoRef.delete();
-    } catch (e) {}
+  // #store user post
+  static Future<String?> uploadHighlightImage(File? _image) async {
+    if (_image == null) return null;
+    String uid =  HiveService.getUID();
+    String imageName = 'file_' + DateTime.now().toString();
+    Reference firebaseStorageRef = _storage.child(highlightFolder).child(imageName);
+    UploadTask uploadTask = firebaseStorageRef.putFile(_image);
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  // #store user post
+  static Future<String?> uploadPostImage(File? _image) async {
+    if (_image == null) return null;
+    String uid =  HiveService.getUID();
+    String imageName = "file_" + DateTime.now().toString();
+    Reference firebaseStorageRef = _storage.child(postFolder).child(imageName);
+    UploadTask uploadTask = firebaseStorageRef.putFile(_image);
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
   }
 }

@@ -6,52 +6,52 @@ import 'package:flutter_instaclone/theme/colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_instaclone/models/post_model.dart';
 import 'package:flutter_instaclone/pages/main_pages/my_home_page.dart';
-import 'package:flutter_instaclone/services/data_service.dart';
-import 'package:flutter_instaclone/services/hive_db_service.dart';
 import 'package:flutter_instaclone/services/storage_service.dart';
-import 'package:logger/logger.dart';
-import '../../widgets/splash_page_widgets.dart';
-import 'home_page.dart';
+import '../../services/firestore_service.dart';
+import '../../services/utils.dart';
 
-class MyPostPage extends StatefulWidget {
+
+
+class UploadPage extends StatefulWidget {
+  static const String id = '/upload_page';
   PageController controller;
-   MyPostPage({Key? key, required this.controller}) : super(key: key);
-  static String id = "/my_post_page";
-
+  UploadPage({Key? key, required this.controller}) : super(key: key);
 
   @override
-  State<MyPostPage> createState() => _MyPostPageState();
+  State<UploadPage> createState() => _UploadPageState();
 }
 
-class _MyPostPageState extends State<MyPostPage> {
-  bool load = false;
-  File? image;
-  final picker = ImagePicker();
-  FocusNode focusNode = FocusNode();
-  TextEditingController textController = TextEditingController();
+class _UploadPageState extends State<UploadPage> {
+  final TextEditingController _captionController = TextEditingController();
+  final FocusNode _captionFocus = FocusNode();
+  bool isLoading = false;
+  File? _image;
+  var selectedImageSize = '';
 
-  getImageGallery() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+  // #camera
+  _imageFromCamera() async {
+    XFile? image = await ImagePicker()
+        .pickImage(source: ImageSource.camera, imageQuality: 50);
+
     setState(() {
-      if (pickedFile != null) {
-        image = File(pickedFile.path);
-      } else {
-        Logger().e("No image selected!");
-      }
+      _image = File(image!.path);
+      selectedImageSize = _image != null ?(_image!.lengthSync() / 1024 / 1024).toStringAsFixed(2) + ' Mb' : '';
     });
   }
 
-  getImageCamera() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  // #gallery
+  _imageFromGallery() async {
+    XFile? image = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 50);
+
     setState(() {
-      if (pickedFile != null) {
-        image = File(pickedFile.path);
-      } else {
-        Logger().e("No image selected!");
-      }
+      _image = File(image!.path);
+      selectedImageSize = _image != null ?(_image!.lengthSync() / 1024 / 1024).toStringAsFixed(2) + ' Mb' : '';
     });
   }
 
+  // #gallery or camera
   _bottomSheet() {
     showModalBottomSheet(
         context: context,
@@ -71,7 +71,7 @@ class _MyPostPageState extends State<MyPostPage> {
                   title: const Text(
                     "Pick Photo", style: TextStyle(color: Colors.white),),
                   onTap: () {
-                    getImageCamera();
+                    _imageFromCamera();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -82,7 +82,7 @@ class _MyPostPageState extends State<MyPostPage> {
                   title: const Text(
                     "Take Photo", style: TextStyle(color: Colors.white),),
                   onTap: () {
-                    getImageGallery();
+                    _imageFromGallery();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -94,39 +94,65 @@ class _MyPostPageState extends State<MyPostPage> {
     );
   }
 
-  _savePost() async {
-    Logger().i(image.toString() + textController.text.trim());
-    if (image == null || textController.text
-        .trim()
-        .isEmpty) {
+  // #upload button
+  void _uploadPost(){
+    _captionFocus.unfocus();
+    String caption = _captionController.text.toString().trim();
+    if(_image == null && caption.isEmpty){
+      Utils.snackBar(context, 'Attach a photo and make a caption, please!', ColorService.deepColor);
+      return;
+    }else if(_image == null){
+      Utils.snackBar(context, 'Attach a photo, please!', ColorService.deepColor);
+      return;
+    } else if(caption.isEmpty){
+      Utils.snackBar(context, 'Leave a caption, please!', ColorService.deepColor);
       return;
     }
-    setState(() {
-      load = true;
-    });
-    await StorageService.uploadImg(image, DataService.postFolder)
-        .then((value) => _putPost(value));
+    _postImage(caption);
   }
 
-  _putPost(String? img) async {
-    if (img != null) {
-      DataService.putPost(Post(
-        id: HiveDB
-            .getUser()
-            .id,
-        postImage: img,
-        caption: textController.text,
-        createDate: DateTime.now().toString(),
-        isLiked: false,
-        isMine: true,
-      )).then((value) {
-        setState(() {
-          load = false;
-        });
-        Navigator.pushReplacementNamed(context, HomePage.id);
-      });
+  void _postImage(String caption) {
+    setState(() {
+      isLoading = true;
+    });
+    StorageService.uploadPostImage(_image).then((downloadUrl) => {_resPostImage(caption, downloadUrl!)});
+  }
+
+  void _resPostImage(String caption, String downloadUrl) {
+    Post post = Post(caption: caption, image: downloadUrl);
+    _apiStorePost(post);
+  }
+
+  void _apiStorePost(Post post) async {
+    Post posted = await FirestoreService.storePost(post);
+    FirestoreService.storeFeed(posted).then((value) => {_moveToFeed()});
+  }
+
+  void _moveToFeed() {
+    setState(() {
+      isLoading = false;
+      _image = null;
+      _captionController.clear();
+    });
+    widget.controller.jumpToPage(0);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _captionController.dispose();
+    _captionFocus.dispose();
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    // TODO: implement setState
+    if(mounted){
+      super.setState(fn);
     }
   }
+
 
 
   @override
@@ -139,19 +165,19 @@ class _MyPostPageState extends State<MyPostPage> {
         leading: IconButton(
           onPressed: () {
             setState(() {
-              image = null;
-              textController.clear();
-              focusNode.unfocus();
+              _image = null;
+              _captionController.clear();
+              _captionFocus.unfocus();
             });
             widget.controller.jumpToPage(0);
-            Navigator.pushReplacementNamed(context, HomePage.id);
+            Navigator.pushReplacementNamed(context, FeedPage.id);
           },
           icon: const Icon(Icons.home, color: Colors.red,),
         ),
-        title: const Text("New post", style: TextStyle(color: Colors.white),),
+        title: const Text("New post", style: TextStyle(color: Colors.white,fontFamily: 'Billabong',fontSize: 25),),
         actions: [
           IconButton(
-            onPressed: _savePost,
+            onPressed: _uploadPost,
             icon: const Icon(Icons.upload, color: Colors.red,),
           ),
         ],
@@ -160,7 +186,7 @@ class _MyPostPageState extends State<MyPostPage> {
         children: [
           Container(
             height: 4,
-            child: load
+            child: isLoading
                 ? LinearProgressIndicator(color: Colors.yellow)
                 : Container(),
           ),
@@ -170,7 +196,7 @@ class _MyPostPageState extends State<MyPostPage> {
             child: DottedBorder(
               strokeCap: StrokeCap.butt,
               dashPattern: const [10, 10, 10, 10],
-              padding: EdgeInsets.all(image != null ? 0 : 1),
+              padding: EdgeInsets.all(_image != null ? 0 : 1),
               child: GestureDetector(
                 onTap: _bottomSheet,
                 child: Container(
@@ -179,9 +205,10 @@ class _MyPostPageState extends State<MyPostPage> {
                   decoration: const BoxDecoration(
                     color: Colors.grey,
                   ),
-                  child: image != null
+                  child: _image != null
                       ? Image.file(
-                    image!,
+
+                    _image!,
                     fit: BoxFit.cover,
                   )
                       : Icon(
@@ -202,11 +229,11 @@ class _MyPostPageState extends State<MyPostPage> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextField(
                 style: const TextStyle(color: Colors.white),
-                controller: textController,
+                controller: _captionController,
                 keyboardType: TextInputType.multiline,
                 minLines: 1,
                 maxLines: 5,
-                focusNode: focusNode,
+                focusNode: _captionFocus,
                 decoration: const InputDecoration(
                   hintText: "Caption",
                   hintStyle: TextStyle(color: Colors.grey),
@@ -226,3 +253,4 @@ class _MyPostPageState extends State<MyPostPage> {
     );
   }
 }
+
