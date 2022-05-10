@@ -180,9 +180,9 @@ class _FeedPageState extends State<FeedPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: GestureDetector(
-                    child: const Text('Hide',
+                    child: const Text('Remove',
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
+                            fontSize: 18, fontWeight: FontWeight.bold,color: Colors.red)),
                     onTap: () {
                       // posts.remove(post);
                       // setState(() {});
@@ -320,9 +320,10 @@ class _FeedPageState extends State<FeedPage> {
                         subtitle: Text(posts[index].date ?? '',style: const TextStyle(color: Colors.white),),
                         trailing: IconButton(
                           splashRadius: 1,
-                          icon: const Icon(Icons.more_vert,color: Colors.white),
+                          icon: posts[index].isMine ? const Icon(Icons.more_vert,color: Colors.white ): const Icon(Icons.more_vert,color: Colors.black ) ,
                           onPressed: () {
-                            _bottomSheet(posts[index], context);
+                              _bottomSheet(posts[index], context);
+
                           },
                         ),
                       ),

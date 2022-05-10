@@ -7,8 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_instaclone/services/auth_service.dart';
 
 import 'package:flutter_instaclone/services/hive_db_service.dart';
-import 'package:flutter_instaclone/widgets/my_home_page_widgets.dart';
-import 'package:flutter_instaclone/widgets/splash_page_widgets.dart';
+
+
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 

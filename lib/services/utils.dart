@@ -56,7 +56,7 @@ class Utils {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20.0)
             ),
-            backgroundColor: ColorService.lightColor.withOpacity(0.9),
+            backgroundColor: Colors.red,
             title: Text(title, style: const TextStyle(color: Colors.white, fontSize: 30, fontFamily: 'instagramFont'), textAlign: TextAlign.center),
             content: Text(message, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
             actions: [

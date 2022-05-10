@@ -5,8 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_instaclone/models/user_model.dart';
 import 'package:flutter_instaclone/services/hive_db_service.dart';
-import 'package:flutter_instaclone/widgets/my_search_page_widgets.dart';
-import 'package:flutter_instaclone/widgets/splash_page_widgets.dart';
+
 
 import '../../services/firestore_service.dart';
 import '../../services/http_service.dart';

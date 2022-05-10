@@ -174,7 +174,7 @@ class _UploadPageState extends State<UploadPage> {
           },
           icon: const Icon(Icons.home, color: Colors.red,),
         ),
-        title: const Text("New post", style: TextStyle(color: Colors.white,fontFamily: 'Billabong',fontSize: 25),),
+        title: const Text("New post", style: TextStyle(color: Colors.white,fontFamily: 'Billabong',fontSize: 30),),
         actions: [
           IconButton(
             onPressed: _uploadPost,
