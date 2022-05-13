@@ -14,7 +14,6 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-
 import '../../services/utils.dart';
 import '../../theme/colors.dart';
 import '../../widgets/appBar.dart';

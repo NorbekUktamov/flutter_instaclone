@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 
 class HttpService {
@@ -19,13 +19,6 @@ class HttpService {
     }
     return null;
   }
-
-  // static Future<UserModel> loadMe() async {
-  //   String uid = HiveService.getUID();
-  //   var value = await FirebaseFirestore.instance.collection("users").doc(uid).get();
-  //   UserModel user = UserModel.fromJson(value.data()!);
-  //   return user;
-  // }
 
 
   static Map<String, dynamic> bodyFollow(String fcmToken, String myName) {

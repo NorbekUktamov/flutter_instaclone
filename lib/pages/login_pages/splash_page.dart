@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instaclone/models/user_model.dart';
 import 'package:flutter_instaclone/pages/login_pages/signin_page.dart';
 import 'package:flutter_instaclone/pages/main_pages/home_page.dart';
 

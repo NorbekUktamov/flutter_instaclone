@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'hive_db_service.dart';
 
-
 class StorageService {
   static final Reference _storage = FirebaseStorage.instance.ref();
   static const postFolder = 'post_images';

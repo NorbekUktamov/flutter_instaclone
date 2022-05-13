@@ -13,7 +13,6 @@ import 'package:flutter_instaclone/theme/colors.dart';
 import 'package:image_picker/image_picker.dart';
 
 
-
 class ProfilePage extends StatefulWidget {
   static const String id = '/profile_page';
   const ProfilePage({Key? key}) : super(key: key);

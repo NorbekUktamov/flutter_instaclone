@@ -9,6 +9,7 @@ import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import '../theme/colors.dart';
 import 'hive_db_service.dart';
 
+
 class Utils {
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 

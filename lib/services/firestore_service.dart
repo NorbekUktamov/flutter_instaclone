@@ -4,7 +4,6 @@ import '../models/post_model.dart';
 import '../models/user_model.dart';
 import 'hive_db_service.dart';
 
-
 class FirestoreService {
   static final _FireStore = FirebaseFirestore.instance;
 

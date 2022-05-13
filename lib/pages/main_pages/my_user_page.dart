@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -7,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_instaclone/services/firestore_service.dart';
 import 'package:flutter_instaclone/services/hive_db_service.dart';
 import 'package:flutter_instaclone/services/http_service.dart';
-import 'package:flutter_instaclone/theme/colors.dart';
 import 'package:http/http.dart';
 import 'package:flutter_instaclone/models/post_model.dart';
 import 'package:flutter_instaclone/models/user_model.dart';
