@@ -147,7 +147,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         appBar: AppBar(
           elevation: 0,
           title: const Text('Profile',
-              style: TextStyle(fontSize: 30, fontFamily: 'instagramFont')),
+              style: TextStyle(fontSize: 30, fontFamily: 'Billabong',color:Colors.white )),
           centerTitle: true,
         ),
         body: Container(
@@ -170,7 +170,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       padding: const EdgeInsets.all(2.0),
                       decoration: BoxDecoration(
                           border: Border.all(
-                              color: ColorService.lightColor, width: 2),
+                              color: Colors.black, width: 2),
                           shape: BoxShape.circle),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(50),
@@ -200,11 +200,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       children: [
                         Text(postsNumber.toString(),
                             style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20)),
+                                fontWeight: FontWeight.bold, fontSize: 20,color: Colors.white)),
                         const Text('Posts',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                                color: Colors.white,
                                 fontSize: 16)),
                       ],
                     ),
@@ -214,11 +214,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       children: [
                         Text(profileOwner.followers.toString(),
                             style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20)),
+                                fontWeight: FontWeight.bold, fontSize: 20,color: Colors.white)),
                         const Text('Followers',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                                color: Colors.white,
                                 fontSize: 16)),
                       ],
                     ),
@@ -230,11 +230,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         children: [
                           Text(profileOwner.followings.toString(),
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20)),
+                                  fontWeight: FontWeight.bold, fontSize: 20,color: Colors.white)),
                           const Text('Following',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
+                                  color: Colors.white,
                                   fontSize: 16)),
                         ],
                       ),
@@ -251,7 +251,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       style: TextStyle(
                           color:
                               Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
+                                  ? Colors.red
                                   : Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 19),
@@ -260,7 +260,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           text: '\n${profileOwner.email}',
                           style: const TextStyle(
                               fontWeight: FontWeight.w600,
-                              color: Colors.blueGrey,
+                              color: Colors.white,
                               fontSize: 16),
                         ),
                       ]),
@@ -283,7 +283,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         'Edit profile',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontWeight: FontWeight.bold, fontSize: 15,color: Colors.white),
                       ),
                     ),
                     MaterialButton(
@@ -297,7 +297,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         'Ad tools',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontWeight: FontWeight.bold, fontSize: 15,color: Colors.white),
                       ),
                     ),
                     MaterialButton(
@@ -311,7 +311,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         'Insights',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontWeight: FontWeight.bold, fontSize: 15,color: Colors.white),
                       ),
                     ),
                   ],

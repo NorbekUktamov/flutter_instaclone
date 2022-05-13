@@ -43,7 +43,6 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.black,
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.black,
-          foregroundColor: ColorService.lightColor,
           elevation: 0.0,
         ),
       ),

@@ -1,10 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_instaclone/pages/main_pages/my_post_page.dart';
 import 'package:flutter_instaclone/services/http_service.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_instaclone/services/auth_service.dart';
-
 import 'package:flutter_instaclone/services/hive_db_service.dart';
 
 import '../../models/post_model.dart';
@@ -15,7 +11,6 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
